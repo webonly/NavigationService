@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>create-map</title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+    <button onclick="createCanvas()">创建画布</button>
+    <button onclick="goCtreateMode()">进入建图模式</button>
+    <button onclick="saveMap()">保存地图</button>
+    <button onclick="goNavMode()">进入导航模式</button>
+    <button onclick="removeCanvas()">移除画布</button>
+    <button onclick="unsubNav()">取消订阅导航状态信息</button>
+    <button onclick="subNav()">订阅导航状态信息</button>
+	<div id="mapNav"></div>
+</body>
+</html>
+    <script src="js/navigation/NavigationService.min.js"></script>   
+    <script src="js/navigation.js"></script>
+
+
+    <script>
+    function createCanvas(){
+        /**
+         * 初始化画布
+         */
+        NavigationService.ShowMap(800, 800, "mapNav");
+        NavEvent.GetNavMode();
+    }
+     function goCtreateMode(){
+        NavigationService.Gmapping();  
+    }
+    function saveMap(){
+        NavigationService.SaveMap();
+    }
+    function goNavMode(){
+       NavigationService.Navigation(); 
+    }
+    function removeCanvas(){
+       NavigationService.RemoveMap("mapNav");
+    }
+    function unsubNav() {
+       NavigationService.UnSubscribe_diagnosticsTopic();
+    }
+    function subNav() {
+       NavEvent.GetNavMode();
+    }
+    </script>
+
+   

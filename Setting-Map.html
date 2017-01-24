@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>setting-map</title>
+	<link rel="stylesheet" href="">
+</head>
+<body> 
+    <button onclick="subPose()">订阅位置坐标信息</button>
+    <button onclick="unsubPose()">取消位置坐标信息</button>
+    <button onclick="zhanting()">展厅</button>
+    <button onclick="qiantai()">前台</button>
+
+        <button onclick="unStatus()">取消获取状态</button>
+</body>
+</html>
+    <script src="js/navigation/NavigationService.min.js"></script>   
+    <script src="js/navigation.js"></script>
+
+<script>
+//获取地图位置名称
+var poseDataSet=[];
+function getPlaceName(){
+     $.ajax({
+        url:"http://127.0.0.1/Access.asmx/GetAllInfo",
+        dataType: "json",
+        async: true,
+        success: function(data) {
+        // 包装位置数据
+        for(var i=0;i<data.length;i++){
+        var poseData={pose:{position: { x: 0.0, y: 0.0, z: 0.0 },orientation: { x: 0.0, y: 0.0, z: 0.0, w: 1 }},poseId:0,AutoBack:false,SpeakText:''};
+        poseData.pose.position.x=data[i].PointValue.Pos_x;
+        poseData.pose.position.y=data[i].PointValue.Pos_y;
+        poseData.pose.position.z=data[i].PointValue.Pos_z;
+        poseData.pose.orientation.x=data[i].PointValue.Ori_x;
+        poseData.pose.orientation.y=data[i].PointValue.Ori_y;
+        poseData.pose.orientation.z=data[i].PointValue.Ori_z;
+        poseData.pose.orientation.w=data[i].PointValue.Ori_w;
+        poseData.poseId=i;
+        poseData.AutoBack=data[i].AutoBack;
+        poseData.SpeakText=data[i].SpeakText;
+        poseDataSet[i]=poseData;
+        }
+},
+    error: function(request, error) {
+    }
+    });
+}
+getPlaceName();
+console.log(poseDataSet);
+
+   function subPose(){
+       NavigationService.Subscribe_poseTopic(function(event){
+          console.log(event);
+          console.log(JSON.stringify(event));
+       });
+   }
+   function unsubPose(){
+       NavigationService.UnSubscribe_poseTopic();
+   }
+
+  var poseFun=function(event){
+          console.log(event);
+      if (event.status==1) {
+        console.log("导航开始");
+      }else if(event.status==4){
+        console.log("前方有障碍");
+      }
+      else if(event.status==3){
+        console.log("成功到达目标点");
+        NavigationService.UnSubscribeGoal(poseFun);
+      }
+  }
+
+   function zhanting(){
+    var pose=poseDataSet[0].pose;
+    console.log(pose);
+    NavigationService.goPostion(pose,poseFun);
+   }
+   function qiantai(){
+    var pose=poseDataSet[1].pose;
+    NavigationService.goPostion(pose,poseFun);
+   }
+   function unStatus(){
+     NavigationService.UnSubscribeGoal(poseFun);
+   }
+
+</script>
