@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -11,10 +11,13 @@
     <button onclick="unsubPose()">取消位置坐标信息</button>
     <button onclick="zhanting()">展厅</button>
     <button onclick="qiantai()">前台</button>
+    <button onclick="xunhang(0)">巡航</button>
 
         <button onclick="unStatus()">取消获取状态</button>
 </body>
 </html>
+
+
     <script src="js/common/jquery.min.js"></script>   
     <script src="js/navigation/NavigationService.min.js"></script>   
     <script src="js/navigation.js"></script>
@@ -72,6 +75,11 @@ console.log(poseDataSet);
       else if(event.status==3){
         console.log("成功到达目标点");
         NavigationService.UnSubscribeGoal(poseFun);
+        
+        if (navcont<poseDataSet.length) {
+          navcont=navcont+1;
+          NavigationService.goPostion(poseDataSet[navcont].pose,poseFun);
+        }
       }
   }
 
@@ -84,6 +92,29 @@ console.log(poseDataSet);
     var pose=poseDataSet[1].pose;
     NavigationService.goPostion(pose,poseFun);
    }
+
+
+  
+
+  var navcont;
+
+   function xunhang(){
+    navcont=0;
+    NavigationService.goPostion(poseDataSet[navcont].pose,poseFun);
+   }
+   
+
+   
+
+
+
+
+
+
+
+
+
+
    function unStatus(){
      NavigationService.UnSubscribeGoal(poseFun);
    }
