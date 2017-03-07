@@ -15,6 +15,7 @@
         <button onclick="unStatus()">取消获取状态</button>
 </body>
 </html>
+    <script src="js/common/jquery.min.js"></script>   
     <script src="js/navigation/NavigationService.min.js"></script>   
     <script src="js/navigation.js"></script>
 
@@ -66,6 +67,7 @@ console.log(poseDataSet);
         console.log("导航开始");
       }else if(event.status==4){
         console.log("前方有障碍");
+        NavigationService.UnSubscribeGoal(poseFun);
       }
       else if(event.status==3){
         console.log("成功到达目标点");
